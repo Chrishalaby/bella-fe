@@ -10,10 +10,9 @@ import { ActivatedRoute } from '@angular/router';
 import { SectionService } from '../../services/section.service';
 
 @Component({
-  selector: 'app-section-editor',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  template: ` <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
+    selector: 'app-section-editor',
+    imports: [CommonModule, ReactiveFormsModule],
+    template: ` <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
     <input formControlName="title" placeholder="Title" />
     <textarea formControlName="text" placeholder="Content"></textarea>
 
@@ -27,8 +26,8 @@ import { SectionService } from '../../services/section.service';
 
     <button type="submit">Save Changes</button>
   </form>`,
-  styleUrl: './section-editor.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrl: './section-editor.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SectionEditorComponent implements OnInit {
   readonly #formBuilder = inject(FormBuilder);
