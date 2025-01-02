@@ -1,3 +1,4 @@
+// section.service.ts
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -21,11 +22,32 @@ export class SectionService {
     );
   }
 
-  getSection(sectionName: string): Observable<Section[]> {
-    return this.http.get<Section[]>(`${this.apiUrl}/section/${sectionName}`);
+  findAll(): Observable<Section[]> {
+    return this.http.get<Section[]>(this.apiUrl);
   }
 
-  updateSection(id: number, section: Partial<Section>): Observable<Section> {
-    return this.http.put<Section>(`${this.apiUrl}/${id}`, section);
+  getSection(sectionName: string): Observable<Section[]> {
+    return this.http.get<Section[]>(`${this.apiUrl}/${sectionName}`);
+  }
+
+  getAllSections(): Observable<Section[]> {
+    return this.http.get<Section[]>(`${this.apiUrl}`);
+  }
+
+  // createSection(section: Partial<Section>): Observable<Section> {
+  //   return this.http.post<Section>(`${this.apiUrl}`, section);
+  // }
+
+  updateSection(section: Partial<Section>): Observable<Section> {
+    console.log('Section data:', section);
+    if (!section.id) {
+      return this.http.post<Section>(this.apiUrl, section);
+    }
+    console.log('potato');
+    return this.http.put<Section>(`${this.apiUrl}/${section.id}`, section);
+  }
+
+  deleteSection(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

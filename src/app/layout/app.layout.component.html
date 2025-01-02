@@ -1,0 +1,38 @@
+<div class="layout-container" [ngClass]="containerClass">
+  <!-- @if (isAdmin()) {
+    <app-sidebar></app-sidebar>
+    } -->
+  <div>
+    <!-- @if (isAdmin()) {
+        <app-topbar></app-topbar>
+        <app-breadcrumb class="content-breadcrumb"></app-breadcrumb>
+
+        } -->
+
+    <div class="layout-content">
+      <div
+        class="relative overflow-hidden flex flex-column justify-content-center"
+      >
+        <div
+          class="bg-circle opacity-50"
+          style="top: -200px; left: -700px"
+        ></div>
+        <div
+          class="bg-circle hidden lg:flex"
+          style="top: 50px; right: -800px; transform: rotate(60deg)"
+        ></div>
+
+        <div class="landing-wrapper">
+          <app-header></app-header>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-profilemenu></app-profilemenu>
+  <!-- @if (isAdmin()) {
+    <app-config></app-config>
+
+    } -->
+  <div class="layout-mask"></div>
+</div>

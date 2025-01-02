@@ -3,5 +3,5 @@ export interface Section {
   title: string | null;
   text: string | null;
   imageUrl?: string;
-  section: string | null;
+  section: string;
 }

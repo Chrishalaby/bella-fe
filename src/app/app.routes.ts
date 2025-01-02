@@ -1,6 +1,30 @@
 import { Routes } from '@angular/router';
-import { SectionEditorComponent } from './pages/section-editor/section-editor.component';
+import { AppLayoutComponent } from './layout/app.layout.component';
+import { LandingComponent } from './pages/landing/landing.component';
 
 export const routes: Routes = [
-  { path: 'edit/:section', component: SectionEditorComponent },
+  {
+    path: '',
+    component: AppLayoutComponent,
+    children: [
+      // {
+      //   path: '',
+      //   redirectTo: 'LandingComponent',
+      //   pathMatch: 'full',
+      // },
+      {
+        path: '',
+        component: LandingComponent,
+      },
+      {
+        path: 'admin',
+        loadComponent: () =>
+          import('./pages/admin-editor/admin-editor.component').then(
+            (m) => m.AdminEditorComponent
+          ),
+      },
+    ],
+  },
+
+  { path: '**', redirectTo: '' },
 ];
