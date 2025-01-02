@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 
+import { MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 @Component({
@@ -26,11 +27,14 @@ import { InputIconModule } from 'primeng/inputicon';
   ],
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.css',
+  providers: [MessageService],
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactUsComponent {
   readonly #fb = inject(FormBuilder);
   readonly #http = inject(HttpClient);
+  readonly #messageService = inject(MessageService);
 
   contactForm: FormGroup = this.#fb.group({
     name: ['', Validators.required],
@@ -62,11 +66,13 @@ export class ContactUsComponent {
     if (this.contactForm.valid) {
       const formData = this.contactForm.value;
       this.#http
-        .post('https://formspree.io/f/xvgooygl', formData)
+        .post('https://formspree.io/f/xgvvpoql', formData)
         .subscribe(() => {
-          // this.notificationService.showSuccess(
-          //   'Your message has been sent successfully'
-          // );
+          this.#messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Message sent successfully',
+          });
           this.contactForm.reset();
         });
     }
