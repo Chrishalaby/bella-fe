@@ -10,6 +10,9 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 @Component({
   selector: 'app-contact-us',
   imports: [
@@ -18,6 +21,8 @@ import { TextareaModule } from 'primeng/textarea';
     ButtonModule,
     InputTextModule,
     TextareaModule,
+    IconFieldModule,
+    InputIconModule,
   ],
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.css',
@@ -36,20 +41,20 @@ export class ContactUsComponent {
     {
       icon: 'pi pi-fw pi-phone',
       title: 'Phone',
-      info: '(961) 71 067 260',
-      contact: '96171067260',
+      info: '+32 471 12 72 51',
+      contact: '32471127251',
     },
     {
       icon: 'pi pi-fw pi-map-marker',
       title: 'Our Head Office',
-      info: 'Master Mall, Burj Hammoud, Lebanon',
-      contact: 'Master Mall, Burj Hammoud, Lebanon',
+      info: 'KU Leuven, Leuven, Belgium',
+      contact: 'KU Leuven, Leuven, Belgium',
     },
     {
       icon: 'pi pi-fw pi-envelope',
       title: 'Email',
-      info: 'elhalabichristian@gmail.com',
-      contact: 'elhalabichristian@gmail.com',
+      info: 'bella.manshian@kuleuven.be',
+      contact: 'bella.manshian@kuleuven.be',
     },
   ];
 

@@ -24,17 +24,17 @@ export class AppMenuComponent implements OnInit {
           {
             label: 'About Us',
             icon: 'pi pi-fw pi-user',
-            routerLink: ['/pages/aboutus'],
+            routerLink: ['/about'],
           },
           {
             label: 'FAQ',
             icon: 'pi pi-fw pi-question',
-            routerLink: ['/pages/faq'],
+            routerLink: ['/faq'],
           },
           {
             label: 'Contact Us',
             icon: 'pi pi-fw pi-phone',
-            routerLink: ['/pages/contact'],
+            routerLink: ['/contact'],
           },
         ],
       },

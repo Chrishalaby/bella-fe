@@ -10,13 +10,14 @@ import {
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { EditorModule } from 'primeng/editor';
 import { FileUpload } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
-import { firstValueFrom, tap } from 'rxjs';
+import { concatMap, finalize, firstValueFrom, from, tap } from 'rxjs';
 import { Section } from '../../models/section.model';
 import {
   DeleteContent,
@@ -37,6 +38,7 @@ import {
     FormsModule,
     TableModule,
     Toast,
+    EditorModule,
   ],
   providers: [MessageService],
   template: `
@@ -46,6 +48,7 @@ import {
         <p-tablist>
           <p-tab value="0">About Section</p-tab>
           <p-tab value="1">Team Members</p-tab>
+          <p-tab value="2">Blog Posts</p-tab>
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="0" [formGroup]="aboutForm">
@@ -61,12 +64,10 @@ import {
               </div>
               <div class="field">
                 <label for="aboutText">Content</label>
-                <textarea
-                  id="aboutText"
-                  pTextarea
+                <p-editor
                   formControlName="text"
-                  rows="5"
-                ></textarea>
+                  [style]="{ height: '320px' }"
+                ></p-editor>
               </div>
               <div class="field">
                 <label>Image</label>
@@ -85,7 +86,8 @@ import {
                   [src]="aboutContent().imageUrl"
                   class="mt-2"
                   style="max-width: 200px"
-                />}
+                />
+                }
               </div>
               <button
                 pButton
@@ -97,8 +99,30 @@ import {
           </p-tabpanel>
 
           <p-tabpanel value="1">
+            <div class="flex justify-content-between mb-3">
+              <button
+                pButton
+                label="Add Team Member"
+                (click)="addTeamMember()"
+                class="p-button-success"
+              ></button>
+              <button
+                pButton
+                label="Save All Members"
+                (click)="saveTeamMembers()"
+                class="p-button-primary"
+              ></button>
+            </div>
             <form [formGroup]="teamForm">
               <p-table [value]="teamMemberControls" [responsive]="true">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </ng-template>
                 <ng-template pTemplate="body" let-member let-i="index">
                   <tr>
                     <td>
@@ -108,10 +132,12 @@ import {
                       <input pInputText [formControl]="member.get('text')" />
                     </td>
                     <td>
+                      @if (member.get('imageUrl').value) {
                       <img
                         [src]="member.get('imageUrl').value"
                         style="max-width: 100px"
                       />
+                      }
                       <p-fileUpload
                         mode="basic"
                         [auto]="true"
@@ -127,13 +153,84 @@ import {
                       <button
                         pButton
                         icon="pi pi-save"
-                        (click)="saveSection(member.value, 'team')"
+                        (click)="saveSection(member, 'team')"
                         class="p-button-success mr-2"
                       ></button>
                       <button
                         pButton
                         icon="pi pi-trash"
                         (click)="deleteTeamMember(member.value)"
+                        class="p-button-danger"
+                      ></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </form>
+          </p-tabpanel>
+
+          <p-tabpanel value="2">
+            <div class="flex justify-content-between mb-3">
+              <button
+                pButton
+                label="New Blog Post"
+                (click)="addBlogPost()"
+                class="p-button-success"
+              ></button>
+            </div>
+            <form [formGroup]="blogForm">
+              <p-table [value]="blogPosts()" [responsive]="true">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Title</th>
+                    <th>Content Preview</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-post>
+                  <tr>
+                    <td>
+                      <input
+                        pInputText
+                        [(ngModel)]="post.title"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                    </td>
+                    <td>
+                      <p-editor
+                        [(ngModel)]="post.text"
+                        [ngModelOptions]="{ standalone: true }"
+                        [style]="{ height: '220px' }"
+                      >
+                      </p-editor>
+                    </td>
+                    <td>
+                      @if (post.imageUrl) {
+                      <img [src]="post.imageUrl" style="max-width: 100px" />
+                      }
+                      <p-fileUpload
+                        mode="basic"
+                        [auto]="true"
+                        chooseLabel="Change"
+                        accept="image/*"
+                        [maxFileSize]="1000000"
+                        (uploadHandler)="onUpload($event, 'blog', post)"
+                        [customUpload]="true"
+                      >
+                      </p-fileUpload>
+                    </td>
+                    <td>
+                      <button
+                        pButton
+                        icon="pi pi-save"
+                        (click)="saveBlogPost(post)"
+                        class="p-button-success mr-2"
+                      ></button>
+                      <button
+                        pButton
+                        icon="pi pi-trash"
+                        (click)="deleteBlogPost(post)"
                         class="p-button-danger"
                       ></button>
                     </td>
@@ -165,12 +262,18 @@ export class AdminEditorComponent {
     members: this.fb.array([]),
   });
 
+  blogForm = this.fb.group({});
+
   aboutContent = this.store.selectSignal(
     (state) => state.content.sections['about']?.[0]
   );
 
   teamMembers = this.store.selectSignal(
     (state) => state.content.sections['team']
+  );
+
+  blogPosts = this.store.selectSignal(
+    (state) => state.content.sections['blog']
   );
 
   get teamMemberControls() {
@@ -238,13 +341,53 @@ export class AdminEditorComponent {
       .subscribe();
   }
   addTeamMember() {
-    const newMember: Section = {
-      title: 'New Team Member',
-      text: 'Position',
+    const membersArray = this.teamForm.get('members') as FormArray;
+    const newMember = this.fb.group({
+      title: ['New Team Member'],
+      text: ['Position'],
+      section: ['team'],
+      imageUrl: [''],
+    });
+    membersArray.push(newMember);
+  }
+
+  saveTeamMembers() {
+    const members = this.teamMemberControls.map((control) => ({
+      ...control.value,
       section: 'team',
+    }));
+
+    from(members)
+      .pipe(
+        concatMap((member) => this.store.dispatch(new UpdateContent(member))),
+        finalize(() => this.showSuccess('Team members saved successfully'))
+      )
+      .subscribe();
+  }
+
+  addBlogPost() {
+    const newPost = {
+      title: 'New Blog Post',
+      text: '',
+      section: 'blog',
       imageUrl: '',
-    } as Section;
-    this.store.dispatch(new SaveContent(newMember));
+    };
+    this.store.dispatch(new SaveContent(newPost));
+  }
+
+  saveBlogPost(post: any) {
+    const updatedPost = { ...post, section: 'blog' };
+    this.store
+      .dispatch(new UpdateContent(updatedPost))
+      .pipe(tap(() => this.showSuccess('Blog post saved')))
+      .subscribe();
+  }
+
+  deleteBlogPost(post: any) {
+    this.store
+      .dispatch(new DeleteContent(post.id))
+      .pipe(tap(() => this.showSuccess('Blog post deleted')))
+      .subscribe();
   }
 
   deleteTeamMember(member: Section) {

@@ -49,8 +49,9 @@
       >
         <div class="field col">
           <label for="name" class="block text-primary font-bold">Name</label>
-          <span class="p-input-icon-left w-full" style="height: 3.5rem">
-            <i class="pi pi-user" style="left: 1.5rem"></i>
+          <p-iconfield>
+            <p-inputicon class="pi pi-user" />
+
             <input
               type="text"
               pInputText
@@ -59,15 +60,16 @@
               formControlName="name"
               style="height: 3.5rem"
             />
-          </span>
+          </p-iconfield>
         </div>
 
         <div class="field col">
           <label for="email" class="block text-primary font-bold"
             >Email Address</label
           >
-          <span class="p-input-icon-left w-full" style="height: 3.5rem">
-            <i class="pi pi-envelope" style="left: 1.5rem"></i>
+
+          <p-iconfield>
+            <p-inputicon class="pi pi-envelope" />
             <input
               type="text"
               pInputText
@@ -76,7 +78,7 @@
               formControlName="email"
               style="height: 3.5rem"
             />
-          </span>
+          </p-iconfield>
         </div>
 
         <div class="field col-12 flex flex-column">

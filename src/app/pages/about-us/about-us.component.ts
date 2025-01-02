@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core';
 import { Store } from '@ngxs/store';
-import { Section } from '../../models/section.model';
 
 @Component({
   selector: 'app-about-us',
@@ -14,10 +18,16 @@ export class AboutUsComponent {
   private store = inject(Store);
 
   aboutContent = this.store.selectSignal(
-    (state) => state.content.sections['about']?.[0] || ({} as Section)
+    (state) => state.content.sections['about']?.[0]
   );
 
   teamMembers = this.store.selectSignal(
-    (state) => state.content.sections['team'] || []
+    (state) => state.content.sections['team']
   );
+
+  constructor() {
+    effect(() => {
+      console.log('AboutUsComponent initialized', this.teamMembers());
+    });
+  }
 }

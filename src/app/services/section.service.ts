@@ -34,9 +34,9 @@ export class SectionService {
     return this.http.get<Section[]>(`${this.apiUrl}`);
   }
 
-  // createSection(section: Partial<Section>): Observable<Section> {
-  //   return this.http.post<Section>(`${this.apiUrl}`, section);
-  // }
+  createSection(section: Partial<Section>): Observable<Section> {
+    return this.http.post<Section>(`${this.apiUrl}`, section);
+  }
 
   updateSection(section: Partial<Section>): Observable<Section> {
     console.log('Section data:', section);

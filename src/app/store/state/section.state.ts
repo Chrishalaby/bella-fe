@@ -7,6 +7,7 @@ import {
   DeleteContent,
   FetchContent,
   InitializeApp,
+  SaveContent,
   UpdateContent,
   UploadImage,
 } from '../actions/section.actions';
@@ -84,21 +85,21 @@ export class ContentState {
     );
   }
 
-  // @Action(SaveContent)
-  // saveContent(ctx: StateContext<ContentStateModel>, action: SaveContent) {
-  //   return this.sectionService.createSection(action.content).pipe(
-  //     tap((saved) => {
-  //       const state = ctx.getState();
-  //       const section = action.content.section || 'about';
-  //       ctx.patchState({
-  //         sections: {
-  //           ...state.sections,
-  //           [section]: [...(state.sections[section] || []), saved],
-  //         },
-  //       });
-  //     })
-  //   );
-  // }
+  @Action(SaveContent)
+  saveContent(ctx: StateContext<ContentStateModel>, action: SaveContent) {
+    return this.sectionService.createSection(action.content).pipe(
+      tap((saved) => {
+        const state = ctx.getState();
+        const section = action.content.section || 'about';
+        ctx.patchState({
+          sections: {
+            ...state.sections,
+            [section]: [...state.sections[section], saved],
+          },
+        });
+      })
+    );
+  }
 
   @Action(UpdateContent)
   updateContent(ctx: StateContext<ContentStateModel>, action: UpdateContent) {

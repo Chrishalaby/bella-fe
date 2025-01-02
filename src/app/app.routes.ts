@@ -23,6 +23,32 @@ export const routes: Routes = [
             (m) => m.AdminEditorComponent
           ),
       },
+      {
+        path: 'contact',
+        loadComponent: () =>
+          import('./pages/contact-us/contact-us.component').then(
+            (m) => m.ContactUsComponent
+          ),
+      },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./pages/about-us/about-us.component').then(
+            (m) => m.AboutUsComponent
+          ),
+      },
+      {
+        path: 'blog',
+        loadComponent: () =>
+          import('./pages/blog/blog.component').then((m) => m.BlogComponent),
+      },
+      {
+        path: 'blog/:id',
+        loadComponent: () =>
+          import('./pages/blog-detail/blog-detail.component').then(
+            (m) => m.BlogDetailComponent
+          ),
+      },
     ],
   },
 
