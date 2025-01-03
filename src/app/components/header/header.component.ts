@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
-import { LayoutService } from '../../layout/service/app.layout.service';
 
 @Component({
   selector: 'app-header',
@@ -21,18 +19,4 @@ import { LayoutService } from '../../layout/service/app.layout.service';
     StyleClassModule,
   ],
 })
-export class HeaderComponent {
-  readonly #router = inject(Router);
-  readonly #layoutService = inject(LayoutService);
-  // readonly #store = inject(Store);
-
-  //   constructor() {}
-
-  //   onProfileButtonClick() {
-  //     this.#layoutService.showProfileSidebar();
-  //   }
-
-  onCartButtonClick() {
-    this.#router.navigate(['/ecommerce/shopping-cart']);
-  }
-}
+export class HeaderComponent {}

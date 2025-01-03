@@ -19,7 +19,7 @@
     </div>
     <div class="w-full lg:w-6 pr-0 lg:pl-4 mt-3 lg:mt-0">
       <div class="font-bold text-4xl mb-4 text-900">{{ content.title }}</div>
-      <p class="line-height-3 mt-0 mb-3 p-0">{{ content.text }}</p>
+      <p class="line-height-3 mt-0 mb-3 p-0" [innerHTML]="content.text"></p>
     </div>
   </div>
   }

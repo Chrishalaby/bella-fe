@@ -25,7 +25,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuService } from './app.menu.service';
-import { AppSidebarComponent } from './app.sidebar.component';
 import { LayoutService } from './service/app.layout.service';
 
 @Component({
@@ -169,7 +168,6 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     public layoutService: LayoutService,
     private cd: ChangeDetectorRef,
     public router: Router,
-    private appSidebar: AppSidebarComponent,
     private menuService: MenuService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {

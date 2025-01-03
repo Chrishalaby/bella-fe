@@ -11,8 +11,6 @@ import { Store } from '@ngxs/store';
 import { filter, Subscription } from 'rxjs';
 import { HeaderComponent } from '../components/header/header.component';
 import { MenuService } from './app.menu.service';
-import { AppProfileSidebarComponent } from './app.profilesidebar.component';
-import { AppSidebarComponent } from './app.sidebar.component';
 import { AppTopbarComponent } from './app.topbar.component';
 import { LayoutService } from './service/app.layout.service';
 
@@ -20,12 +18,7 @@ import { LayoutService } from './service/app.layout.service';
   selector: 'app-layout',
   templateUrl: './app.layout.component.html',
   styleUrls: ['./app.layout.component.scss'],
-  imports: [
-    AppProfileSidebarComponent,
-    RouterModule,
-    CommonModule,
-    HeaderComponent,
-  ],
+  imports: [RouterModule, CommonModule, HeaderComponent],
 })
 export class AppLayoutComponent implements OnDestroy {
   overlayMenuOpenSubscription: Subscription;
@@ -40,7 +33,7 @@ export class AppLayoutComponent implements OnDestroy {
 
   darkMode: boolean = false;
 
-  @ViewChild(AppSidebarComponent) appSidebar!: AppSidebarComponent;
+  // @ViewChild(AppSidebarComponent) appSidebar!: AppSidebarComponent;
 
   @ViewChild(AppTopbarComponent) appTopbar!: AppTopbarComponent;
 
@@ -57,12 +50,14 @@ export class AppLayoutComponent implements OnDestroy {
             'click',
             (event) => {
               const isOutsideClicked = !(
-                this.appSidebar.el.nativeElement.isSameNode(event.target) ||
-                this.appSidebar.el.nativeElement.contains(event.target) ||
-                this.appTopbar.menuButton.nativeElement.isSameNode(
-                  event.target
-                ) ||
-                this.appTopbar.menuButton.nativeElement.contains(event.target)
+                // this.appSidebar.el.nativeElement.isSameNode(event.target) ||
+                // this.appSidebar.el.nativeElement.contains(event.target) ||
+                (
+                  this.appTopbar.menuButton.nativeElement.isSameNode(
+                    event.target
+                  ) ||
+                  this.appTopbar.menuButton.nativeElement.contains(event.target)
+                )
               );
               if (isOutsideClicked) {
                 this.hideMenu();
@@ -77,15 +72,15 @@ export class AppLayoutComponent implements OnDestroy {
             this.layoutService.isSlimPlus()) &&
           !this.menuScrollListener
         ) {
-          this.menuScrollListener = this.renderer.listen(
-            this.appSidebar.menuContainer.nativeElement,
-            'scroll',
-            (event) => {
-              if (this.layoutService.isDesktop()) {
-                this.hideMenu();
-              }
-            }
-          );
+          // this.menuScrollListener = this.renderer.listen(
+          //   this.appSidebar.menuContainer.nativeElement,
+          //   'scroll',
+          //   (event) => {
+          //     if (this.layoutService.isDesktop()) {
+          //       this.hideMenu();
+          //     }
+          //   }
+          // );
         }
 
         if (this.layoutService.state.staticMenuMobileActive) {
