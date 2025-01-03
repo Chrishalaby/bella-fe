@@ -13,13 +13,10 @@ export class SectionService {
 
   constructor(private http: HttpClient) {}
 
-  uploadImage(file: File): Observable<{ imageUrl: string }> {
+  uploadImage(file: File): Observable<{ url: string }> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<{ imageUrl: string }>(
-      `${this.apiUrl}/upload`,
-      formData
-    );
+    return this.http.post<{ url: string }>(`${this.apiUrl}/upload`, formData);
   }
 
   findAll(): Observable<Section[]> {

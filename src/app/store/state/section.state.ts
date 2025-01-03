@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { catchError, map, tap, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { Section } from '../../models/section.model';
 import { SectionService } from '../../services/section.service';
 import {
@@ -117,12 +117,9 @@ export class ContentState {
       })
     );
   }
-
   @Action(UploadImage)
   uploadImage(ctx: StateContext<ContentStateModel>, action: UploadImage) {
-    return this.sectionService
-      .uploadImage(action.file)
-      .pipe(map((response: { imageUrl: string }) => response));
+    return this.sectionService.uploadImage(action.file);
   }
 
   @Action(DeleteContent)

@@ -17,13 +17,13 @@ import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
-import { concatMap, finalize, firstValueFrom, from, tap } from 'rxjs';
+import { concatMap, finalize, from, switchMap, tap } from 'rxjs';
 import { Section } from '../../models/section.model';
+import { SectionService } from '../../services/section.service';
 import {
   DeleteContent,
   SaveContent,
   UpdateContent,
-  UploadImage,
 } from '../../store/actions/section.actions';
 @Component({
   selector: 'app-admin-editor',
@@ -63,7 +63,10 @@ import {
                 />
               </div>
               <div class="field">
-                <label for="aboutText">Content</label>
+                <p>Current Content:</p>
+                <p [innerHTML]="aboutContent()?.text"></p>
+
+                <label for="aboutText">New Content</label>
                 <p-editor
                   formControlName="text"
                   [style]="{ height: '320px' }"
@@ -247,7 +250,7 @@ import {
 export class AdminEditorComponent {
   private store = inject(Store);
   private messageService = inject(MessageService);
-
+  readonly #sectionService = inject(SectionService);
   private fb = inject(FormBuilder);
 
   aboutForm = this.fb.group({
@@ -284,7 +287,6 @@ export class AdminEditorComponent {
     effect(() => {
       const about = this.aboutContent();
       if (about) {
-        console.log('About content:', about);
         this.aboutForm.patchValue(about);
       }
     });
@@ -307,32 +309,48 @@ export class AdminEditorComponent {
       }
     });
   }
-
-  onUpload(event: any, section: string, member?: Section) {
+  onUpload(event: any, section: string, content?: any) {
     const file = event.files[0];
 
-    firstValueFrom(this.store.dispatch(new UploadImage(file))).then(
-      (response: any) => {
-        if (section === 'about') {
-          const updatedContent = {
-            ...this.aboutContent(),
-            imageUrl: response[0].imageUrl,
-            section: 'about',
-          };
-          this.store.dispatch(new UpdateContent(updatedContent));
-        } else if (member) {
-          const updatedMember = {
-            ...member,
-            imageUrl: response[0].imageUrl,
-            section: 'team',
-          };
-          this.store.dispatch(new UpdateContent(updatedMember));
-        }
-        this.showSuccess('Image uploaded successfully');
-      }
-    );
-  }
+    this.#sectionService
+      .uploadImage(file)
+      .pipe(
+        switchMap((response: { url: string }) => {
+          let updatedContent;
 
+          switch (section) {
+            case 'about':
+              updatedContent = {
+                ...this.aboutContent(),
+                imageUrl: response.url,
+                section: 'about',
+              };
+              break;
+            case 'blog':
+              updatedContent = {
+                ...content,
+                imageUrl: response.url,
+                section: 'blog',
+              };
+              break;
+            case 'team':
+              updatedContent = {
+                ...content,
+                imageUrl: response.url,
+                section: 'team',
+              };
+              break;
+          }
+
+          console.log('Response:', response);
+          console.log('Updated content:', updatedContent);
+          return this.store.dispatch(new UpdateContent(updatedContent));
+        })
+      )
+      .subscribe(() => {
+        this.showSuccess('Image uploaded successfully');
+      });
+  }
   saveSection(form: FormGroup, sectionType?: string) {
     const section = { ...form.value, section: sectionType };
     this.store
