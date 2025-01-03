@@ -42,7 +42,7 @@ import { Store } from '@ngxs/store';
                 <img
                   [src]="member.imageUrl"
                   [alt]="member.title"
-                  class="w-8rem h-8rem border-circle mx-auto mb-3"
+                  class="w-8rem h-8rem border-circle mx-auto mb-3 flex align-self-center"
                 />
                 } @else {
                 <div
